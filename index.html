@@ -1,0 +1,1811 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Java On FHIR</title>
+
+		<link rel="stylesheet" href="reveal/dist/reset.css">
+		<link rel="stylesheet" href="reveal/dist/reveal.css">
+		<link rel="stylesheet" href="reveal/dist/theme/black.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="reveal/plugin/highlight/monokai.css">
+	</head>
+	<body>
+
+
+
+
+
+
+
+
+
+
+
+ <div class="reveal">
+    <div class="slides">
+
+
+      <div id="marcas-de-agua">
+					<div id="marcadeagua-mongo">
+						<img src="./assets/imgs/FHIR_logo.webp" 
+						style="width: 45px; position: absolute; top: 85%; left: 9%;"  alt="logo fhir"></div>
+					<div id="marcadeagua-lafe"><img src="./assets/imgs/hospital-la-fe.png" 
+						style="width: 100px; position: absolute; top: 85%; left: 0%;"  alt="logo lafe"></div>
+				</div>
+
+      <!-- Título: Apuntes -->
+      <section>
+        <h1>Java on FHIR</h1>
+        <p>Jose y Lucas</p>
+        <img src="./assets/imgs/duke_fhir.png" alt="" style="width: 30%; float: right;">
+      </section>
+
+     <!-- Diapositivas Verticales: Información del navegador -->
+      <section>
+        <!-- Diapositiva Padre -->
+        <section>
+          <h2>Introducción a FHIR</h2>
+      <p>Para empezar, si no estás familiarizado con el estándar FHIR puedes leer una introducción a la misma en la siguiente <a target="_blank" href="https://surpass-hulafe.gitlab.io/fhir-bases/">presentación</a></p>
+          <p> <small>En caso de ya saber un poco de esto, continúa leyendo</small></p>
+        </section>
+
+
+        <!-- Diapositivas Hijas (Verticales) -->
+<section>
+  <h3>Zona de juegos</h3>
+  <p> <small>Esta presentación está dividida en 4 partes</small></p>
+	<p class="fragment"><small>
+1. Tecnologías - Explica las principales herramientas y librerías.
+  </small></p>
+	<p class="fragment"><small>
+2. Servidor - Explica de manera sencilla cómo montar un servidor FHIR
+  </small></p>
+	<p class="fragment"><small>
+3. Cliente - Explica de manera sencilla cómo montar un cliente FHIR
+  </small></p>
+	<p class="fragment"><small>
+4. Extras - Explica otros recursos y herramientas aplicables
+  </small></p>
+</section>
+
+
+
+      </section>
+
+ 
+  </section>
+      
+
+      <section data-background="./assets/imgs/burns.webp">
+      </section>
+
+      <!-- Diapositivas Verticales: Información del tomcat -->
+  <section>
+        <section>
+          <h2>Tecnología/s</h2>
+          <p>Hay múltiples tecnologías que nos pueden ayudar con el estándar FHIR, a continuación te detallamos unas cuantas:</p>
+<small>
+    <p>
+      <a href="#testers">Testers, </a>
+      <a href="#servidores-premontados">Servidores premontados, </a>
+      <a href="#librerias">Librerías, </a>
+      <a href="#integraciones">Integraciones, </a>
+      <a href="#documentacion-api">Documentación de API, </a>
+      <a href="#herramientas-apoyo">Herramientas de apoyo </a>
+    </p>
+</small>
+        </section>
+
+
+<section id="testers">
+          <h3>API testers</h3>
+        <p><small>
+  Para empezar a familiarizarnos con FHIR, lo mejor es instalar un cliente REST y realizar una serie de acciones sencillas usando estas aplicaciones y FHIR.
+        </p></small>
+        <p><small>
+        Puedes usar <a href="https://hoppscotch.io/" target="_blank">hoppscotch</a> de manera online y/o en local, que es open source. También puedes usar <a href="https://www.postman.com/">postman</a> que es más conocido anque no es de código libre.
+        </p></small>
+          <p> <small>
+            Para no perder mucho el tiempo, apuntaremos nuestras herramientas al siguiente <a href="https://hapi.fhir.org/baseR4/swagger-ui/" target="_blank">servidor online de HAPI </a> 
+            server - (https://hapi.fhir.org/baseR4/) doc -(https://hapi.fhir.org/baseR4/swagger-ui/)<a href="https://sandbox.hl7europe.eu/pcsp/" target="_blank"> pcsp </a>- (https://sandbox.hl7europe.eu/pcsp/)
+          </small></p>
+          <p> <small>
+            En este otro enlace, puedes encontrar más <a href="https://confluence.hl7.org/display/FHIR/Public+Test+Servers" target="_blank"> servidores públicos de prueba </a>
+          </small></p>
+</section>
+<section>
+          <h3>Ej. Hoppscotch</h3>
+
+	<p class="fragment"><small>
+  La forma más sencilla de probarlo es entrando en el siguiente <a href="https://hoppscotch.io/" target="_blank">enlace</a>.
+  </small></p>
+	<p class="fragment"><small>
+  Tras esto, sobre el menú REST, pulsa sobre el símbolo + y selecciona GET, coloca (https://hapi.fhir.org/baseR4/Patient) en lugar de (https://echo.hoppscotch.io).
+  </small></p>
+	<p class="fragment"><small>
+  Pulsa sobre el botón enviar y deberías recibir una respuesta del servidor similar <a href="#server-response">esta</a>. ¡Enhorabuena, ya estás interactuando con un servidor FHIR!
+  </small></p>
+</section>
+<section id="server-response">
+          <h3>Ej. Hoppscotch</h3>
+        <img src="./assets/imgs/hopscotch_4.JPG" alt="" style="width: 60%;">
+</section>
+<section>
+          <h3>Instalación Hoppscotch</h3>
+        <p><small>
+          La instalación como PWA (Web app) es muy sencilla.
+        </p></small>
+	<p class="fragment"><small>
+    1. Abre Chrome o cualquier navegador basado en chrome (ej. brave)
+  </p></small>
+	<p class="fragment"><small>
+    2. Ves a la url hoppscotch.io
+  </p></small>
+	<p class="fragment"><small>
+   3. Click en "Install +" en la parte derecha superior, junto a la barra de navegación.
+   </p></small>
+	<p class="fragment"><small>
+   4. Sigue las instrucciones que te da el navegador.
+   </p></small>
+</section>
+<section>
+          <h3>Ej. Hoppscotch</h3>
+        <p><small>
+          Ahora mira en settings la configuración de la aplicación.
+        </p></small>
+        <img src="./assets/imgs/hopscotch_2.JPG" alt="" style="width: 100%;">
+</section>
+
+
+<section>
+  <h3>Ejercicios para romper mano</h3>
+  <small>
+					<table>
+						<thead>
+							<tr>
+								<th>Acción</th>
+								<th>Método</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr>
+								<td>Busca todos los pacientes</td>
+								<td>GET</td>
+							</tr>
+							<tr>
+								<td>Busca un paciente por su nombre</td>
+								<td>GET</td>
+              <tr>
+								<td>Busca los recursos "Condition" que pertenezcan a un paciente</td>
+								<td>GET</td>
+							</tr>
+							<tr>
+								<td>Busca todos los recursos de un paciente</td>
+								<td>GET</td>
+							</tr>
+							<tr>
+								<td>Inserta un paciente</td>
+								<td>POST</td>
+							</tr>
+							<tr>
+								<td>Elimina un paciente</td>
+								<td>DELETE</td>
+							</tr>
+							
+						</tbody>
+					</table>
+</small>
+				</section>
+
+
+<section>
+  <h3>Ejercicios para romper mano</h3>
+  <small>
+					<table>
+						<thead>
+							<tr>
+								<th>Acción</th>
+								<th>Solución</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr>
+								<td>Busca todos los pacientes</td>
+								<td>GET a http://localhost:9057/fhir/Patient puedes usar <a href="https://www.hl7.org/fhir/http.html#paging" target="_blank"> _count </a>para obtener un mayor o menor núemero de resultados en las <a href="https://www.hl7.org/fhir/R4/search.html#count" target="_blank">búsquedas.</a> </td>
+							</tr>
+							<tr>
+								<td>Busca un paciente por su nombre</td>
+								<td></td>
+              <tr>
+								<td>Busca los recursos "Condition" que pertenezcan a un paciente</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>Busca todos los recursos de un paciente</td>
+								<td>GET a http://localhost:9057/fhir/Patient/id$everything aquí también aplica _count recibiendo más o menos resultados</td>
+							</tr>
+							<tr>
+								<td>Inserta un paciente</td>
+								<td>POST a http://localhost:9057/fhir/Patient y cuerpo con un recurso fhir correcto</td>
+							</tr>
+							<tr>
+								<td>Elimina un paciente</td>
+								<td>DELETE a http://localhost:9057/fhir/Patient/iddelrecurso</td>
+							</tr>
+							
+						</tbody>
+					</table>
+</small>
+				</section>
+
+
+
+
+<section id="librerias">
+  <h3>Librerías</h3>
+  <small>
+    <p>Aunque FHIR es básicamente <a target="_blank" href="https://surpass-hulafe.gitlab.io/fhir-bases/#/5/1">JSON</a>, para gestionar recursos FHIR de manera más eficiente y cómoda con java, usaremos <a target="_blank" href="https://hapifhir.io/">HAPI FHIR</a> que permite trabajar con los recursos fhir como si fueran objetos.</p>
+    <p>A día de hoy nostros sólo podemos recomendar esta librería, que es muy completa y flexible, y es lo mejor de lo que hemos probado.</p>
+</small>
+ </section>
+<section>
+  <h3>Librerías Hapi Ej.</h3>
+  <small>
+    <p>Un ejemplo de cómo usar objetos java con hapi-fhir. Más adelante profundizaremos un poco más.</p>
+</small>
+<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
+// el objeto Java
+Patient patient = new Patient();
+patient.addName()
+      .setUse(HumanName.NameUse.OFFICIAL)
+      .setFamily("Bruteztrausen")
+      .addGiven("Bestiajez");
+// el parseador de objeto hapi-fhir a jsonstring
+encoded = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(patient);
+System.out.println(encoded);
+</code></pre>
+ </section>
+<section id="servidores-premontados">
+  <h3>Servidores premontados</h3>
+  <small>
+    <p>Hemos buscado servidores que fueran robustos, y permitieran ampliar sus capacidades usando java.</p>
+    <p>Básicamente hay 2 que cumplan estas especificaciones, <a target="_blank" href="https://github.com/hapifhir/hapi-fhir-jpaserver-starter">HAPI </a> e <a target="_blank" href="https://github.com/LinuxForHealth/FHIR">IBM</a>. Ahí encontrarás el código fuente e instrucciones para ejecutarlos, aunque a nosotros, tras unas pruebas sencillas, nos dió mejor resultado el JPA de HAPI. Más adelante haremos una introducción sencilla a este servidor.</p>
+</small>
+ </section>
+
+<section id="integraciones">
+  <h3>Integraciones</h3>
+  <small>
+    <p>Como FHIR es básicamente JSON es bastante fácil de integrar con otros sistemas, incluso se puede utilizar dentro de herramientas del tipo flujo de datos como son, <a target="_blank" href="https://n8n.io/">n8n</a>, <a target="_blank" href="https://nodered.org/">node-red</a> o por ejemplo <a target="_blank" href="https://airflow.apache.org/">Apache Airflow</a> que ya gasta el equipo de DANA del hospital.</p>
+    <p>No obstante, para realizar integraciones profundas y complejas, puede ser interesante mirar <a target="_blank" href="https://camel.apache.org/">Apache Camel</a> que aligera bastante la carga de trabajo.</p>
+    <p>Más adelante pondremos ejemplos de como usar FHIR con cada uno de estos sistemas.</p>
+</small>
+ </section>
+<section id="documentacion-api">
+  <h3>Documentación</h3>
+  <small>
+    <p><a target="_blank" href="https://github.com/swagger-api/swagger-codegen">Swagger</a> y <a target="_blank" href="https://swagger.io/specification/"> open-api </a>se usan para la documentación de la api. Puedes ver un ejemplo en este <a target="_blank" href="https://hapi.fhir.org/baseR4/swagger-ui/">enlace</a>. Es básicamente un generador automático de página web con documentación interactiva de la api FHIR.</p>
+    <p>Si usas el servidor de HAPI, este lleva ya integrado el generador de swagger de manera nativa.</p>
+</small>
+ </section>
+ <section id="herramientas-apoyo">
+  <h3>Servidores de terminología</h3>
+  <small>
+    <p><a target="_blank" href="https://github.com/aehrc/ontoserver-deploy">Ontoserver</a>, <a target="_blank" href="https://github.com/IHTSDO/snowstorm">Snowstorm</a> para servidores de terminología.</p>
+    <p>Si usas el servidor de HAPI, este lleva también incluído un servidor de terminología sencillo (no tan desarrollado como los anteriores) pero viene integrado de manera nativa y es también muy personalizable.</p>
+</small>
+ </section>
+
+
+
+ </section>
+
+
+      <section data-background="./assets/imgs/bob.webp">
+      </section>
+
+      <!-- Diapositivas Verticales: Información del navegador -->
+  <section>
+        <!-- Diapositiva Padre -->
+        <section>
+          <h2>Servidor</h2>
+      <p>¿Cómo podemos levantar un servidor FHIR?</p>
+<small>
+    <p>
+      <a href="#compara">Comparación, </a>
+      <a href="#jpa">JPA, </a>
+      <a href="#plain">Plain, </a>
+      <a href="#jaxb">JAXB </a>
+    </p>
+</small>
+ 
+        </section>
+
+        <!-- Diapositivas Hijas (Verticales) -->
+<section>
+  <h3>Posibilidades</h3>
+  <p>Existe diferentes implementaciones de un servidor HAPI, creadas para usos específicos.</p>
+  <p>Según nuestras necesidades usaremos uno u otro, las posibilidades son ...</p>
+</section>
+<section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+  <p>Es una implementación completa de un servidor FHIR que utiliza una base de datos relacional para el almacenamiento de recursos. Este servidor proporciona su propio esquema de base de datos y gestiona toda la lógica de almacenamiento y recuperación sin necesidad de programación adicional</p>
+  <p>Es fácil de levantar e implementar, es útil para crear repositorios de datos en formato FHIR y nos servirá como punto de partida en el aprendizaje.</p>
+</small>
+</section>
+<section>
+  <h3>Plain HAPI-FHIR server</h3>
+  <small>
+  <p>Conocido también como "Facade", este servidor actúa como una capa intermedia sobre un backend proporcionado por el usuario. En este modelo, el desarrollador escribe el código que maneja la lógica de almacenamiento y recuperación de recursos, mientras que HAPI FHIR se encarga del procesamiento HTTP, la serialización/deserialización y la semántica REST de FHIR</p>
+  <p>Adecuado para situaciones donde se desea agregar una capa FHIR sobre sistemas existentes, permitiendo que estos expongan una interfaz FHIR sin modificar su estructura interna.</p>
+  <p>Útil por ejemplo para exponer una base de datos, o insertar datos fhir en una base de datos que ya tenemos en nuestro sistema.</p>
+</small>
+</section>
+<section>
+  <h3>JAX-RS HAPI-FHIR server</h3>
+  <small>
+  <p>Para usar en un entorno donde ya se han creado servicios existentes utilizando JAX-RS, a menudo es deseable utilizar JAX-RS para servidores FHIR también. HAPI FHIR proporciona una implementación de servidor FHIR JAX-RS para este propósito.</p>
+  <p>Adecuado para aplicaciones que ya están basadas en JAX-RS y necesitan añadir capacidades FHIR sin cambiar la arquitectura existente</p>
+</small>
+</section>
+
+
+<section id="compara">
+  <h3>Comparación</h3>
+  <small>
+  <p>Resumen implementaciones HAPI-FHIR server</p>
+<table>
+    <thead>
+        <tr>
+            <th>Característica</th>
+            <th>Plain Server</th>
+            <th>JPA Server</th>
+            <th>JAX-RS Server</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Persistencia</strong></td>
+            <td>Proporcionada por el usuario</td>
+            <td>Integrada con JPA</td>
+            <td>Dependiente de la implementación</td>
+        </tr>
+        <tr>
+            <td><strong>Facilidad de uso</strong></td>
+            <td>Requiere desarrollo adicional</td>
+            <td>Listo para usar</td>
+            <td>Requiere configuración JAX-RS</td>
+        </tr>
+        <tr>
+            <td><strong>Flexibilidad</strong></td>
+            <td>Alta (control total)</td>
+            <td>Media (basada en JPA)</td>
+            <td>Alta (integración con JAX-RS)</td>
+        </tr>
+        <tr>
+            <td><strong>Integración</strong></td>
+            <td>Sistemas heredados</td>
+            <td>Nuevas aplicaciones</td>
+            <td>Aplicaciones JAX-RS existentes</td>
+        </tr>
+        <tr>
+            <td><strong>Uso</strong></td>
+            <td>Facade: capa intermedia sobre sistemas existentes</td>
+            <td>Servidor listo para usar con persistencia integrada</td>
+            <td>Servidor FHIR sobre aplicaciones JAX-RS</td>
+        </tr>
+    </tbody>
+</table>
+
+  </small>
+</section>
+
+<section id="jpa">
+  <h2>JPA HAPI-FHIR server</h2>
+  <p>En la <a href="https://github.com/hapifhir/hapi-fhir-jpaserver-starter" target="_blank">documentación</a> hay varias formas de levantar un jpa hapi-fhir server, usando docker, maven, jetty, spring-boot...</p>
+  <p>Nosotros vamos a utilizar el despliegue en local, por ser más sencillo y poder así meter mano al servidor de manera rápida.</p>
+</section>
+
+<section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <p></p>
+  <small>
+  <h4>Pasos a seguir:</h4>
+  <ol>
+    <li>Descarga el código fuente</li>
+    <li>Configura el servidor</li>
+    <li>Arrancar el servidor</li>
+    <li>Probar el servidor con un tester (postman, hoppscotch, etc.,)</li>
+  </ol>
+  </small>
+</section>
+
+<section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+  <h4>Requisitos</h4>
+  <ol>
+    <li>Tener instalado al menos Java 17</li>
+    <li>Tener instalado Apache Maven 3.9.8 o superior</li>
+    <li>Tener un tester (postman, hoppscotch, etc.,) o en su defecto un cliente o script de prueba que apunte al servidor de manera correcta.</li>
+  </ol>
+  </small>
+</section>       
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Descargar HAPI FHIR Server</h4>
+        <p>Descargamos el archivo zip desde el siguiente enlace:</p>
+        <a target="_blank" href="https://github.com/hapifhir/hapi-fhir-jpaserver-starter/releases/tag/helm-v0.17.0">https://github.com/hapifhir/hapi-fhir-jpaserver-starter/releases/tag/helm-v0.17.0</a>
+  </small>
+</section>
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Configuración del Proyecto</h4>
+        <p>El archivo application.yaml en el HAPI FHIR JPA Server es crucial para la configuración del servidor, ya que define cómo este interactúa con su entorno. Este archivo utiliza la estructura YAML para establecer parámetros relacionados con la base de datos, el servidor FHIR, y otras configuraciones generales.</p>
+  </small>
+  </section>
+
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Configuración del Proyecto</h4>
+        <p>Descomprimimos el código fuente y modificamos el archivo application.yml ubicado en:</p>
+        <pre><code>./src/main/resources</code></pre>
+          <p>Cambiamos el puerto a <b>9670</b> o cualquier otro puerto que quieras usar.</p>
+  </small>
+  </section>
+
+    <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Primera Ejecución del Servidor</h4>
+        <p>Para la primera ejecución, nos situamos con la consola sobre el directorio raíz y usamos el siguiente comando:</p>
+        <pre><code class="shell" data-trim contenteditable style="font-size: 18px;">mvn clean spring-boot:run -Pboot</code></pre>
+        <p>Para parar el servidor un CNTRL+C servirá</p>
+  </small>
+      </section>
+      
+     
+      <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Verificación</h4>
+        <p>Si todo ha ido bien, podemos acceder al servidor en:</p>
+        <a href="http://localhost:9670/fhir" target="_blank">http://localhost:9670/fhir</a>
+        <p>También podemos probar con hoppscotch apuntando a la siguiente url</p>
+        <pre><code class="shell" data-trim contenteditable style="font-size: 18px;">http://localhost:9057/fhir/metadata</code></pre>
+  </small>
+      </section>
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Ejecuciones Posteriores</h4>
+        <p>Para las ejecuciones posteriores, para que arranque más rápidamente y recupere datos cacheados por maven, simplemente ejecutamos:</p>
+        <pre><code class="shell" data-trim contenteditable style="font-size: 18px;">mvn spring-boot:run -Pboot</code></pre>
+  </small>
+</section>
+ 
+
+  <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Configurar la Base de datos</h4>
+        <p>Para que los datos del servidor sean persistentes y no se pierdan al reiniciar, es necesario cambiar la configuración de la base de datos. De forma predeterminada, el servidor utiliza una base de datos en memoria (H2) que no guarda los datos de forma permanente:</p>
+        
+<pre><code># url: jdbc:h2:mem:test_mem
+url: jdbc:h2:file:./data/denver</code></pre>
+  <small>
+        <p>Esto modificar la URL de la base de datos en el archivo de configuración para que utilice un archivo local. De esta forma se obtiene algo de persistencia en los datos. Es útil para funcionar en pruebas simples.</p>
+  </small>
+        <p>También se pueden usar otros tipos de bases de datos soportadas por HAPI FHIR, como MySQL, PostgreSQL o Informix, si se necesita una solución más robusta para entornos de producción.</p>
+  </small>
+  </section> 
+
+  <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Configuración con PostgreSQL 1</h4>
+        <p>Creamos la base de datos de postgres usando </p>
+        <pre><code>psql -U postgres</code></pre>
+        <p>Contraseña "admin" y luego.. </p>
+        <pre><code>CREATE DATABASE hapi_fhir;
+\l
+CREATE USER hapi_user WITH PASSWORD 'hapi_password';
+GRANT ALL PRIVILEGES ON DATABASE hapi_fhir TO hapi_user;
+\q</code></pre>
+  </small>
+      </section>
+ 
+  <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Configuración con PostgreSQL 2</h4>
+        <p>Para configurar PostgreSQL como la base de datos para HAPI FHIR, es necesario modificar el archivo de configuración para que apunte a una instancia de PostgreSQL. A continuación, un ejemplo de cómo hacerlo:</p>
+        <pre><code>spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/hapi'
+    username: hapi_user
+    password: hapi_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate.dialect: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
+      hibernate.search.enabled: false</code></pre>
+  </small>
+      </section>
+      
+
+  <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Configuración con PostgreSQL 3</h4>
+        <p>Finalmente ejecutamos estos 2 comandos</p>
+        <pre><code>
+mvn clean install
+mvn spring-boot:run
+        </code></pre>
+  </small>
+      </section>
+
+  <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h4>Configuración de Informix</h4>
+        <p>Para utilizar Informix como base de datos, también es necesario cambiar la configuración del archivo de propiedades para apuntar a una instancia de Informix. Aquí un ejemplo de cómo hacerlo:</p>
+        <pre><code>url: jdbc:informix-sqli://localhost:1526/fhir_db:INFORMIXSERVER=tu_servidor_informix
+username: tu_usuario
+password: tu_contraseña
+driverClassName: com.informix.jdbc.IfxDriver</code></pre>
+        <p>Asegúrate de tener Informix instalado y en ejecución, y de configurar el servidor de Informix adecuadamente, incluyendo la creación de la base de datos <strong>fhir_db</strong> y la configuración del servidor.</p>
+  </small>
+      </section>
+     
+
+  <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Instalación de Drivers JDBC</h2>
+        <p>Para poder utilizar bases de datos como PostgreSQL o Informix, es necesario instalar los drivers JDBC correspondientes en el servidor HAPI FHIR. A continuación, se explica cómo hacerlo:</p>
+        <ul>
+          <li>Descarga el archivo JAR del driver JDBC correspondiente para tu base de datos (por ejemplo, desde el sitio oficial de PostgreSQL o Informix).</li>
+          <li>Coloca el archivo JAR descargado en la carpeta <strong>lib</strong> del proyecto HAPI FHIR.</li>
+          <li>Modifica el archivo <strong>pom.xml</strong> de tu proyecto para añadir la dependencia del driver. Por ejemplo, para PostgreSQL:</li>
+        </ul>
+        <pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+  &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+  &lt;version&gt;42.2.18&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+        <p>Esto permitirá que Maven descargue y configure el driver automáticamente al compilar el proyecto.</p>
+  </small>
+      </section>
+<section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Desplegar en Tomcat</h2>
+        <p>Podemos generar un war para desplegar en tomcat usando símplemente el comando</p>
+        <pre><code>mvn clean package</code></pre>
+        <p>El directorio de salida del war se encuentra dentro de la carpeta /target puedes modificar tanto esto como el nombre del war cambiando el fichero pom.xml de la raíz del proyecto jpa</p>
+ 
+  </small>
+      </section>
+
+
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Personalizar el Servidor JPA</h2>
+        <p>Al servidor se le puede añadir lógica de programación y otras cosas a través de interceptores y providers</p>
+  </small>
+      </section>
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Personalizar el Servidor JPA</h2>
+
+        <h3>Implementando Providers (Un recurso de tipo Custom)</h3>
+        <p>Usando unas clases que añadimos en la ruta <strong>./src/main/java/mi/hospital/o/lo/que/quiera</strong> podemos crear nuevas rutas en la api, para ello haremos:</p>
+        <ol>
+          <li class="fragment">Crearmos una Clase que hereda de DomainResource</li>
+          <li class="fragment">Creamos una Clase que implementa la interfaz IResourceProvider</li>
+          <li class="fragment">Damos de alta el Provider y el Recurso en el fichero Application que hay en <strong>.\src\main\java\ca\uhn\fhir\jpa\starter</strong></li>
+        </ol>
+  </small>
+      </section>
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Personalizar el Servidor JPA</h2>
+        <p>Creamos la <a href="./resources/custom-resource/RecursoPersonalizado.java" target="_blank">clase que hereda de DomainResource</a> nos sirve para establecer un tipo de recurso nuevo y/o heredar y extender las funcionalidades de otro (es el modelo).</p>
+        <pre><code class="java">package es.lafe.fhir.custom;
+
+import ca.uhn.fhir.model.api.annotation.Child;
+import ca.uhn.fhir.model.api.annotation.Description;
+import ca.uhn.fhir.model.api.annotation.ResourceDef;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.StringType;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
+@Entity // Marca la clase como una entidad JPA
+@Table(name = "recurso_personalizado") // Nombre de la tabla en la base de datos
+@ResourceDef(name = "RecursoPersonalizado", profile = "http://miempresa.com/StructureDefinition/recursopersonalizado")
+public class RecursoPersonalizado extends DomainResource {
+
+    private static final long serialVersionUID = 1L;
+
+    @Child(name = "campoPersonalizado")
+    @Description(shortDefinition = "Un campo personalizado para el recurso")
+    private StringType campoPersonalizado;
+
+    // Getter y Setter
+    public StringType getCampoPersonalizado() {
+        if (campoPersonalizado == null) {
+            campoPersonalizado = new StringType();
+        }
+        return campoPersonalizado;
+    }
+
+    public void setCampoPersonalizado(StringType campoPersonalizado) {
+        this.campoPersonalizado = campoPersonalizado;
+    }
+
+    // Implementación del método copy() requerido por DomainResource
+    @Override
+    public RecursoPersonalizado copy() {
+        RecursoPersonalizado copia = new RecursoPersonalizado();
+        copia.campoPersonalizado = campoPersonalizado != null ? campoPersonalizado.copy() : null;
+        return copia;
+    }
+
+    // Define el tipo de recurso para HAPI FHIR
+    @Override
+    public ResourceType getResourceType() {
+        return ResourceType.Basic; // Cambia "Basic" por otro tipo si corresponde
+    }
+}
+
+        </code></pre>
+  </small>
+      </section>
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Personalizar el Servidor JPA</h2>
+        <p>Creamos la <a href="./resources/custom-resource/RecursoPersonalizadoProvider.java" target="_blank">clase que implementa IresourceProvider</a> nos sirve para implementar las acciones del servidor (es un serviceProvider "es el CRUD").</p>
+        <pre><code class="java">
+          package es.lafe.fhir.custom;
+
+import ca.uhn.fhir.rest.annotation.Create;
+import ca.uhn.fhir.rest.annotation.Read;
+import ca.uhn.fhir.rest.annotation.Update;
+import ca.uhn.fhir.rest.annotation.Delete;
+import ca.uhn.fhir.rest.annotation.ResourceParam;
+import ca.uhn.fhir.rest.annotation.IdParam;
+import ca.uhn.fhir.rest.annotation.Search;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.server.RequestDetails;
+import ca.uhn.fhir.rest.server.IResourceProvider;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.StringType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class RecursoPersonalizadoProvider implements IResourceProvider {
+
+    @Override
+    public Class<RecursoPersonalizado> getResourceType() {
+        return RecursoPersonalizado.class;
+    }
+
+    @Create
+    public MethodOutcome createRecursoPersonalizado(@ResourceParam RecursoPersonalizado recurso) {
+        System.out.println("Creando RecursoPersonalizado: " + recurso.getCampoPersonalizado().getValue());
+
+        // Asigna un ID único al recurso creado
+        recurso.setId("1");
+
+        // Devuelve el recurso creado como parte del resultado
+        MethodOutcome outcome = new MethodOutcome();
+        outcome.setCreated(true);
+        outcome.setResource(recurso);
+        
+
+        System.out.println("CREADO RECURSO");
+        return outcome;
+    }
+
+    @Search
+    public List<RecursoPersonalizado> searchRecursoPersonalizado(RequestDetails theRequestDetails) {
+        System.out.println("Realizando búsqueda de RecursoPersonalizado...");
+
+        // Crea una lista de ejemplo con recursos personalizados
+        List<RecursoPersonalizado> recursos = new ArrayList<>();
+        RecursoPersonalizado recurso = new RecursoPersonalizado();
+        recurso.setCampoPersonalizado(new StringType("Ejemplo de recurso personalizado"));
+
+        // Asigna un ID único al recurso
+        recurso.setId("1");
+
+        recursos.add(recurso);
+        System.out.println("BUSQUEDA REALIZADA");
+
+        return recursos;
+    }
+
+    @Read
+    public RecursoPersonalizado readRecursoPersonalizado(@IdParam IdType id) {
+        System.out.println("Leyendo RecursoPersonalizado con ID: " + id.getIdPart());
+
+        // Crea un recurso con el ID solicitado
+        RecursoPersonalizado recurso = new RecursoPersonalizado();
+        recurso.setCampoPersonalizado(new StringType("Valor personalizado"));
+        recurso.setId(id.getIdPart()); // Asigna el ID proporcionado
+        System.out.println("BUSQUEDA REALIZADA");
+
+        return recurso;
+    }
+
+    @Update
+    public MethodOutcome updateRecursoPersonalizado(@IdParam IdType id, @ResourceParam RecursoPersonalizado recurso) {
+        System.out.println("Actualizando RecursoPersonalizado con ID: " + id.getIdPart());
+
+        // Asigna el ID al recurso actualizado
+        recurso.setId(id.getIdPart());
+
+        MethodOutcome outcome = new MethodOutcome();
+        outcome.setResource(recurso);
+
+        return outcome;
+    }
+
+    @Delete
+    public MethodOutcome deleteRecursoPersonalizado(@IdParam IdType id) {
+        System.out.println("Eliminando RecursoPersonalizado con ID: " + id.getIdPart());
+
+        MethodOutcome outcome = new MethodOutcome();
+        return outcome;
+    }
+}
+
+        </code></pre>
+  </small>
+      </section>
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Personalizar el Servidor JPA</h2>
+        <p>Registramos el provider y el recurso personalizado <a href="./resources/custom-resource/Application.java" target="_blank">en Application.java</a> sin esto no funcionará correctamente.</p>
+        <pre><code class="java">
+          package ca.uhn.fhir.jpa.starter;
+
+import ca.uhn.fhir.batch2.jobs.config.Batch2JobsConfig;
+import ca.uhn.fhir.jpa.batch2.JpaBatch2Config;
+import ca.uhn.fhir.jpa.starter.annotations.OnEitherVersion;
+import ca.uhn.fhir.jpa.starter.cdshooks.StarterCdsHooksConfig;
+import ca.uhn.fhir.jpa.starter.cr.StarterCrDstu3Config;
+import ca.uhn.fhir.jpa.starter.cr.StarterCrR4Config;
+import ca.uhn.fhir.jpa.starter.mdm.MdmConfig;
+import ca.uhn.fhir.jpa.subscription.channel.config.SubscriptionChannelConfig;
+import ca.uhn.fhir.jpa.subscription.match.config.SubscriptionProcessorConfig;
+import ca.uhn.fhir.jpa.subscription.match.config.WebsocketDispatcherConfig;
+import ca.uhn.fhir.jpa.subscription.submit.config.SubscriptionSubmitterConfig;
+import ca.uhn.fhir.rest.server.RestfulServer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Import;
+import ca.uhn.fhir.context.FhirContext; // Para el contexto FHIR
+import es.lafe.fhir.custom.MiPaciente; // Tu clase personalizada que extiende Patient
+import es.lafe.fhir.custom.RecursoPersonalizado; // Tu nuevo recurso personalizado
+import es.lafe.fhir.custom.RecursoPersonalizadoProvider; // Tu nuevo recurso personalizado
+
+
+@ServletComponentScan(basePackageClasses = {RestfulServer.class})
+@SpringBootApplication(exclude = {ElasticsearchRestClientAutoConfiguration.class, ThymeleafAutoConfiguration.class})
+@Import({
+	StarterCrR4Config.class,
+	StarterCrDstu3Config.class,
+	StarterCdsHooksConfig.class,
+	SubscriptionSubmitterConfig.class,
+	SubscriptionProcessorConfig.class,
+	SubscriptionChannelConfig.class,
+	WebsocketDispatcherConfig.class,
+	MdmConfig.class,
+	JpaBatch2Config.class,
+	Batch2JobsConfig.class
+})
+public class Application extends SpringBootServletInitializer {
+
+	public static void main(String[] args) {
+
+		SpringApplication.run(Application.class, args);
+
+		// Server is now accessible at eg. http://localhost:8080/fhir/metadata
+		// UI is now accessible at http://localhost:8080/
+	}
+
+
+	@Autowired
+	AutowireCapableBeanFactory beanFactory;
+
+	@Bean
+	@Conditional(OnEitherVersion.class)
+	public ServletRegistrationBean hapiServletRegistration(RestfulServer restfulServer) {
+		ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
+		beanFactory.autowireBean(restfulServer);
+	    restfulServer.registerProvider(new RecursoPersonalizadoProvider()); // Agrega tu proveedor aquí
+		servletRegistrationBean.setServlet(restfulServer);
+		servletRegistrationBean.addUrlMappings("/fhir/*");
+		servletRegistrationBean.setLoadOnStartup(1);
+
+		return servletRegistrationBean;
+	}
+
+	@Bean
+	public FhirContext fhirContext() {
+		FhirContext ctx = FhirContext.forR4(); // Ajusta la versión según lo que uses
+		ctx.registerCustomType(MiPaciente.class); // Registrar una clase que extiende Patient
+		ctx.registerCustomType(RecursoPersonalizado.class); // Registrar un recurso nuevo
+		return ctx;
+	}
+
+}
+
+        </code></pre>
+  </small>
+      </section>
+
+
+ <section>
+  <h3>Configuración Básica de la docuementación de la API</h3>
+  <p>La documentación de la api se connstruye automáticamente al crear nuevos recursos, no obstante, las acciones (get, post, put, delete) se tienen que explicitar mediante anotaciones en el códig. (ampliar-pendiente)</p>
+  <img src="./assets/imgs/recurso_personalizado_swagger.JPG" alt="" style="width: 50%;">
+</section>       
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Personalizar el Servidor JPA</h2>
+
+        <h3>Implementando un Filtro de Autenticación</h3>
+        <p>Usando unas clases que añadimos en la ruta <strong>./src/main/java/mi/hospital/o/lo/que/quiera</strong> podemos crear también filtros y/o interceptores. Estos sirven como intermediario que se ejecuta antes o después de que el servidor JPA ejecute la lógica.</p>
+        <ol>
+          <li class="fragment">Creamos una clase que hereda de Filter (forma parte del framework SpringBoot)</li>
+          <li class="fragment">Damos de alta el Filter y el Recurso en el fichero Application que hay en <strong>.\src\main\java\ca\uhn\fhir\jpa\starter</strong></li>
+        </ol>
+  </small>
+      </section>
+  <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Filtro</h2>
+        <p>Creamos la <a href="./resources/filter/AuthenticationFilter.java" target="_blank">clase que actúa de filtro</a> nos sirve para implementar lógica de negocio, antes o después del servidor HAPI-FHIR. (Inyectamos código)</p>
+        <pre><code class="java">
+          package es.lafe.fhir.custom;
+
+import jakarta.servlet.FilterChain;  // Correcto para Jakarta EE
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.codec.binary.Base64;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+@Component
+public class AuthenticationFilter implements Filter {
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // Inicialización del filtro si es necesario
+    }
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        String authHeader = httpRequest.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Basic ")) {
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.getWriter().write("Missing or invalid Authorization header");
+            return;
+        }
+
+        String base64 = authHeader.substring("Basic ".length());
+        String decoded = new String(Base64.decodeBase64(base64));
+        String[] parts = decoded.split(":");
+
+        if (parts.length != 2) {
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.getWriter().write("Invalid Authorization header format");
+            return;
+        }
+
+        String username = parts[0];
+        String password = parts[1];
+
+        if (!isValidUser(username, password)) {
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.getWriter().write("Invalid username or password");
+            return;
+        }
+
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {
+        // Destrucción del filtro si es necesario
+    }
+
+    private boolean isValidUser(String username, String password) {
+        return "usuario".equals(username) && "contraseña".equals(password);
+    }
+}
+
+
+        </code></pre>
+  </small>
+      </section>
+
+ <section>
+  <h3>JPA HAPI-FHIR server</h3>
+  <small>
+        <h2>Filtro de Autenticación</h2>
+        <p>Registramos el filtro <a href="./resources/custom-resource/Application.java" target="_blank">en Application.java</a> sin esto no funcionará correctamente.</p>
+        <pre><code class="java">
+          package ca.uhn.fhir.jpa.starter;
+
+import ca.uhn.fhir.batch2.jobs.config.Batch2JobsConfig;
+import ca.uhn.fhir.jpa.batch2.JpaBatch2Config;
+import ca.uhn.fhir.jpa.starter.annotations.OnEitherVersion;
+import ca.uhn.fhir.jpa.starter.cdshooks.StarterCdsHooksConfig;
+import ca.uhn.fhir.jpa.starter.cr.StarterCrDstu3Config;
+import ca.uhn.fhir.jpa.starter.cr.StarterCrR4Config;
+import ca.uhn.fhir.jpa.starter.mdm.MdmConfig;
+import ca.uhn.fhir.jpa.subscription.channel.config.SubscriptionChannelConfig;
+import ca.uhn.fhir.jpa.subscription.match.config.SubscriptionProcessorConfig;
+import ca.uhn.fhir.jpa.subscription.match.config.WebsocketDispatcherConfig;
+import ca.uhn.fhir.jpa.subscription.submit.config.SubscriptionSubmitterConfig;
+import ca.uhn.fhir.rest.server.RestfulServer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Import;
+import ca.uhn.fhir.context.FhirContext; // Para el contexto FHIR
+import es.lafe.fhir.custom.MiPaciente; // Tu clase personalizada que extiende Patient
+import es.lafe.fhir.custom.RecursoPersonalizado; // Tu nuevo recurso personalizado
+import es.lafe.fhir.custom.RecursoPersonalizadoProvider; // Tu nuevo recurso personalizado
+import es.lafe.fhir.custom.AuthenticationFilter; // Tu nuevo interceptor
+import org.springframework.boot.web.servlet.FilterRegistrationBean; // para el filtro
+
+
+
+@ServletComponentScan(basePackageClasses = {RestfulServer.class})
+@SpringBootApplication(exclude = {ElasticsearchRestClientAutoConfiguration.class, ThymeleafAutoConfiguration.class})
+@Import({
+	StarterCrR4Config.class,
+	StarterCrDstu3Config.class,
+	StarterCdsHooksConfig.class,
+	SubscriptionSubmitterConfig.class,
+	SubscriptionProcessorConfig.class,
+	SubscriptionChannelConfig.class,
+	WebsocketDispatcherConfig.class,
+	MdmConfig.class,
+	JpaBatch2Config.class,
+	Batch2JobsConfig.class
+})
+public class Application extends SpringBootServletInitializer {
+
+	public static void main(String[] args) {
+
+		SpringApplication.run(Application.class, args);
+
+		// Server is now accessible at eg. http://localhost:8080/fhir/metadata
+		// UI is now accessible at http://localhost:8080/
+	}
+
+
+	@Autowired
+	AutowireCapableBeanFactory beanFactory;
+
+
+
+	@Bean
+	@Conditional(OnEitherVersion.class)
+	public ServletRegistrationBean hapiServletRegistration(RestfulServer restfulServer) {
+		ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
+		beanFactory.autowireBean(restfulServer);
+	    restfulServer.registerProvider(new RecursoPersonalizadoProvider()); // Agrega tu proveedor aquí
+	//	restfulServer.registerInterceptor(new AuthenticationFilter()); // Registrar el interceptor
+		servletRegistrationBean.setServlet(restfulServer);
+		servletRegistrationBean.addUrlMappings("/fhir/*");
+		servletRegistrationBean.setLoadOnStartup(1);
+
+		return servletRegistrationBean;
+	}
+
+	@Bean
+	public FhirContext fhirContext() {
+		FhirContext ctx = FhirContext.forR4(); // Ajusta la versión según lo que uses
+		ctx.registerCustomType(MiPaciente.class); // Registrar una clase que extiende Patient
+		ctx.registerCustomType(RecursoPersonalizado.class); // Registrar un recurso nuevo
+		return ctx;
+	}
+
+	
+	@Bean
+	public FilterRegistrationBean<AuthenticationFilter> authenticationFilter() {
+		FilterRegistrationBean<AuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new AuthenticationFilter());
+		registrationBean.addUrlPatterns("/fhir/*"); // Aplica el filtro solo a las rutas necesarias
+		return registrationBean;
+	}
+
+}
+
+        </code></pre>
+  </small>
+      </section>
+
+
+   
+       
+
+ <section>
+  <h3>Autorización y autenticación</h3>
+  <p>Ahora podrás ver cómo sin contraseña, no hay acceso al servidor.</p>
+  <img src="assets/imgs/spring_authorization_filter.JPG" alt="" style="width: 70%;">
+</section>       
+
+ <section>
+  <h3>Autorización y autenticación</h3>
+  <p>Ahora podrás ver cómo sin contraseña, no hay acceso al servidor.</p>
+  <img src="assets/imgs/spring_authorization_filter2.JPG" alt="" style="width: 70%;">
+</section>       
+
+ 
+<section>
+  <h3>Activar el servidor de terminología de HAPI</h3>
+  <p>Hay varias formas de usar un servidor de terminología.</p>
+  <ol>
+    <li>De manera externa.</li>
+    <li>De manera interna.</li>
+  </ol>
+</section>       
+
+<section>
+  <h3>Servidor de terminología conectado usando la configuración de jpa-hapi-fhir</h3>
+  <p>Activa la siguiente opción</p>
+<pre>
+<code class="yaml">
+# Habilitar o deshabilitar Swagger
+hapi.fhir.ui.enabled=true
+
+# Cambiar la URL base de la documentación
+hapi.fhir.ui.base-url=/hapi-fhir-jpaserver-webapp
+
+# Habilitar/deshabilitar el acceso a la interfaz de usuario de Swagger
+hapi.fhir.ui.swagger-url=/swagger-ui.html
+
+# Personalización de la descripción de la API
+hapi.fhir.ui.api-description=Mi servidor FHIR personalizado
+</code>
+</pre>
+  
+</section>       
+
+<section>
+  <h3>Añadir y validar terminologías y codificaciones usando CodeSystems y ValueSets de FHIR</h3>
+  <p>Pendiente-explicar con ejemplos y fotos</p>
+</section>       
+ 
+ 
+
+
+ <section id="plain">
+  <h3>Plain HAPI-FHIR server</h3>
+  <p>Aquí <a href="https://blog.ordina-jworks.io/ehealth/2021/02/23/hapi-fhir.html" target="_blank">https://blog.ordina-jworks.io/ehealth/2021/02/23/hapi-fhir.html</a> encontrarás un tutorial de introducción al plain server y la técnica de "facade".</p>
+</section>       
+ 
+
+
+     
+  </section>
+
+      <section data-background="./assets/imgs/south.webp">
+      </section>
+ <section>
+        <section>
+          <h2>Clientes</h2>
+          <p>¡A jugar!</p>
+        </section>
+
+
+<section>
+  <h3>Cliente FHIR</h3>
+  <small>
+  <p>A la hora de crear un cliente para interactuar con un servidor FHIR hay que tener en cuenta que pueden haber 2 aproximaciones básicas para comunicarnos con el servidor:</p>
+  <ol>
+    <li class="fragment">Múltiples interacciones con el servidor por paciente</li>
+    <li class="fragment">Una única interacción con el servidor por paciente</li>
+  </ol>
+  </small>
+
+</section>
+
+<section>
+  <h3>Cliente FHIR</h3>
+  <p>Múltiples interacciones</p>
+  <img src="./assets/imgs/fhir_individual.JPG" alt="" style="width: 50%;">
+  <small>
+  <small><p>
+    Un paciente que construyes usando múltiples interacciones con el servidor, es decir, vas aportando poco a poco los datos del paciente hasta completarlo.
+  </p>
+  <p>Yo recomiendo esta estrategia para la actualiazación de datos, no para la inserción de un dato nuevo, pues se vuelve muy tedioso tener que comprobar cada ineteracción con el servidor y sus posibles errores.</p>
+</small>
+</small>
+</section>
+
+<section>
+  <h3>Cliente FHIR</h3>
+  <p>Una única interacción</p>
+  <img src="./assets/imgs/fhir_transaction.JPG" alt="" style="width: 50%;">
+  <small>
+  <small>
+<p>
+    Un paciente que construyes usando múltiples interacciones con el servidor, es decir, vas aportando poco a poco los datos del paciente hasta completarlo.
+</p>
+  <p>Esta la recomiendo para la creación de nuevos pacientes en el servidor, enviando de una todos los datos necesarios, de esta manera sólo se manejan los errores una vez. No bstante, para actualizar los datos de un paciente puede no ser la mejor estrategia.</p>
+  </small>
+  </small>
+</section>
+
+<!-- Título -->
+<section>
+  <h2>Extensión de Recursos en HAPI FHIR</h2>
+  <p>Personalización de recursos FHIR para adaptarlos a necesidades específicas.</p>
+</section>
+
+<!-- Introducción -->
+<section>
+  <h2>¿Qué es la Extensión de Recursos?</h2>
+  <ul>
+    <li>Proceso de crear clases que extienden recursos estándar de FHIR.</li>
+    <li>Permite añadir atributos y comportamientos personalizados.</li>
+    <li>Facilita la adaptación a perfiles específicos o requisitos particulares.</li>
+  </ul>
+</section>
+
+<!-- Ejemplo de Extensión -->
+<section>
+  <h2>Ejemplo: Extensión del Recurso <code>Observation</code></h2>
+  <p>Creación de una clase personalizada para registrar observaciones de presión arterial con un atributo adicional para la posición del paciente.</p>
+  <pre><code class="java">
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
+
+@ResourceDef(name = "Observation", profile = "http://example.org/fhir/StructureDefinition/BloodPressureObservation")
+public class BloodPressureObservation extends Observation {
+
+    private static final long serialVersionUID = 1L;
+
+    // Atributo personalizado para la posición del paciente
+    private String patientPosition;
+
+    public BloodPressureObservation() {
+        super();
+        // Configuración del código de la observación para presión arterial
+        CodeableConcept code = new CodeableConcept();
+        code.addCoding(new Coding()
+            .setSystem("http://loinc.org")
+            .setCode("85354-9")
+            .setDisplay("Blood pressure panel with all children optional"));
+        this.setCode(code);
+    }
+
+    // Getter y Setter para el atributo personalizado
+    public String getPatientPosition() {
+        return patientPosition;
+    }
+
+    public void setPatientPosition(String patientPosition) {
+        this.patientPosition = patientPosition;
+    }
+
+    // Método para establecer las lecturas de presión sistólica y diastólica
+    public void setBloodPressureReadings(double systolic, double diastolic) {
+        // Componente para presión sistólica
+        ObservationComponentComponent systolicComponent = new ObservationComponentComponent();
+        systolicComponent.getCode().addCoding(new Coding()
+            .setSystem("http://loinc.org")
+            .setCode("8480-6")
+            .setDisplay("Systolic blood pressure"));
+        systolicComponent.setValue(new Quantity().setValue(systolic).setUnit("mmHg"));
+        this.addComponent(systolicComponent);
+
+        // Componente para presión diastólica
+        ObservationComponentComponent diastolicComponent = new ObservationComponentComponent();
+        diastolicComponent.getCode().addCoding(new Coding()
+            .setSystem("http://loinc.org")
+            .setCode("8462-4")
+            .setDisplay("Diastolic blood pressure"));
+        diastolicComponent.setValue(new Quantity().setValue(diastolic).setUnit("mmHg"));
+        this.addComponent(diastolicComponent);
+    }
+}
+  </code></pre>
+</section>
+
+<!-- Explicación del Código -->
+<section>
+  <h2>Explicación del Código</h2>
+  <ul>
+    <li><code>@ResourceDef</code>: Anotación que define el recurso como una observación y lo asocia a un perfil específico.</li>
+    <li><code>patientPosition</code>: Atributo personalizado que indica la posición del paciente durante la medición.</li>
+    <li><code>setBloodPressureReadings</code>: Método que establece las lecturas de presión sistólica y diastólica utilizando componentes de la observación.</li>
+  </ul>
+</section>
+
+<!-- Uso del Recurso Personalizado -->
+<section>
+  <h2>Uso del Recurso Personalizado</h2>
+  <p>Cómo instanciar y utilizar la clase <code>BloodPressureObservation</code> en una aplicación.</p>
+  <pre><code class="java">
+// Crear una instancia de la observación personalizada
+BloodPressureObservation bpObservation = new BloodPressureObservation();
+
+// Establecer las lecturas de presión arterial
+bpObservation.setBloodPressureReadings(120, 80);
+
+// Establecer la posición del paciente
+bpObservation.setPatientPosition("Sentado");
+
+// Configurar información adicional
+bpObservation.setSubject(new Reference("Patient/123"));
+bpObservation.setEffective(new DateTimeType(new Date()));
+
+// Imprimir la posición del paciente
+System.out.println("Posición del paciente: " + bpObservation.getPatientPosition());
+  </code></pre>
+</section>
+
+<!-- Beneficios de la Extensión -->
+<section>
+  <h2>Beneficios de la Extensión de Recursos</h2>
+  <ul>
+    <li>Permite adaptar los recursos FHIR a las necesidades específicas de una organización.</li>
+    <li>Facilita la incorporación de lógica y atributos personalizados.</li>
+    <li>Mantiene la compatibilidad con el estándar FHIR y sus operaciones.</li>
+  </ul>
+</section>
+
+<!-- Buenas Prácticas -->
+<section>
+  <h2>Buenas Prácticas</h2>
+  <ul>
+    <li>Utilizar <code>@ResourceDef</code> para asociar la clase personalizada al perfil FHIR correspondiente.</li>
+    <li>Documentar claramente los atributos y métodos adicionales.</li>
+    <li>Validar los recursos personalizados antes de su uso en producción.</li>
+    <li>Evitar modificar la estructura básica del recurso estándar para mantener la compatibilidad.</li>
+  </ul>
+</section>
+
+
+        <section>
+          <h3>Cliente HAPI-FHIR</h3>
+          <small>
+  <p>En el fichero <a href="./resources/java-hapi-fhir-client/src/FhirPatientClient.java" target="_blank">./resources/java-hapi-fhir-client/src/FhirPatientClient.java</a> encontrarás el código de un cliente sencillito que crea y envía recursos paciente a un servidor fhir.</p>
+          </small>
+        </section>
+
+<section>
+    <h3>Cliente HAPI-FHIR</h3>
+    <small>
+        <p>Esto es aplicable también al uso en webservlets y otras tecnologías de java.</p>
+    </small>
+    <pre><code class="html">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Formulario de Paciente FHIR&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Formulario de Registro de Paciente&lt;/h2&gt;
+    &lt;form action=&quot;/FHIRPatientWebApp/submitPatient&quot; method=&quot;post&quot;&gt;
+        &lt;label for=&quot;firstName&quot;&gt;Nombre:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;firstName&quot; name=&quot;firstName&quot; required&gt;&lt;br&gt;&lt;br&gt;
+
+        &lt;label for=&quot;lastName&quot;&gt;Apellido:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;lastName&quot; name=&quot;lastName&quot; required&gt;&lt;br&gt;&lt;br&gt;
+
+        &lt;label for=&quot;phone&quot;&gt;Teléfono (opcional):&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;phone&quot; name=&quot;phone&quot;&gt;&lt;br&gt;&lt;br&gt;
+
+        &lt;label for=&quot;email&quot;&gt;Correo electrónico (opcional):&lt;/label&gt;
+        &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot;&gt;&lt;br&gt;&lt;br&gt;
+
+        &lt;label for=&quot;birthDate&quot;&gt;Fecha de nacimiento (YYYY-MM-DD):&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;birthDate&quot; name=&quot;birthDate&quot; required&gt;&lt;br&gt;&lt;br&gt;
+
+        &lt;label for=&quot;serverUrl&quot;&gt;URL base del servidor FHIR acabado en /:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;serverUrl&quot; name=&quot;serverUrl&quot; required&gt;&lt;br&gt;&lt;br&gt;
+
+        &lt;button type=&quot;submit&quot;&gt;Enviar&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+</section>
+
+<section>
+    <h3>Cliente HAPI-FHIR</h3>
+    <small>
+        <p>Páginas JSP y demás que hacen de forntend</p>
+    </small>
+    <pre><code class="java">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=ISO-8859-1&quot;
+    pageEncoding=&quot;ISO-8859-1&quot; %&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Resultado del Registro de Paciente&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;${message}&lt;/h2&gt;
+    &lt;c:if test=&quot;${not empty patientId}&quot;&gt;
+        &lt;p&gt;ID del paciente: ${patientId}&lt;/p&gt;
+    &lt;/c:if&gt;
+    &lt;a href=&quot;/&quot;&gt;Volver al formulario&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+</section>
+
+
+
+
+<section>
+  <h3>Cliente HAPI-FHIR</h3>
+  <p>Y el código del servlet, sencillito también que ejecuta la lógica y las llamadas al servidor usando hapi.</p>
+  <pre>
+  <code class="java">
+    import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.ContactPoint;
+import org.hl7.fhir.r4.model.DateType;
+
+@WebServlet("/submitPatient")
+public class FhirPatientServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String phone = request.getParameter("phone");
+        String email = request.getParameter("email");
+        String birthDate = request.getParameter("birthDate");
+        String serverUrl = request.getParameter("serverUrl");
+
+        // Crear recurso Patient en formato FHIR usando HAPI FHIR
+        Patient patient = new Patient();
+
+        // Configurar nombre del paciente
+        HumanName name = new HumanName();
+        name.setFamily(lastName).addGiven(firstName);
+        patient.addName(name);
+
+        // Configurar contacto telefónico si está presente
+        if (phone != null && !phone.isEmpty()) {
+            ContactPoint phoneContact = new ContactPoint();
+            phoneContact.setSystem(ContactPoint.ContactPointSystem.PHONE);
+            phoneContact.setValue(phone);
+            phoneContact.setUse(ContactPoint.ContactPointUse.MOBILE);
+            patient.addTelecom(phoneContact);
+        }
+
+        // Configurar correo electrónico si está presente
+        if (email != null && !email.isEmpty()) {
+            ContactPoint emailContact = new ContactPoint();
+            emailContact.setSystem(ContactPoint.ContactPointSystem.EMAIL);
+            emailContact.setValue(email);
+            patient.addTelecom(emailContact);
+        }
+
+        // Configurar fecha de nacimiento
+        if (birthDate != null && !birthDate.isEmpty()) {
+            patient.setBirthDateElement(new DateType(birthDate));
+        }
+
+        // Configurar el cliente FHIR
+        FhirContext context = FhirContext.forR4();
+        IGenericClient client = context.newRestfulGenericClient(serverUrl);
+
+        String message;
+        String patientId = null;
+
+        // Enviar el recurso al servidor FHIR mediante una solicitud POST para crear un nuevo paciente
+        try {
+            MethodOutcome outcome = client.create().resource(patient).execute();
+            if (outcome.getCreated() != null && outcome.getCreated()) {
+                message = "Paciente creado exitosamente";
+                patientId = outcome.getId().getIdPart();
+            } else {
+                message = "Error al crear el paciente";
+            }
+        } catch (Exception e) {
+            message = "Error al conectar con el servidor: " + e.getMessage();
+        }
+
+        request.setAttribute("message", message);
+        request.setAttribute("patientId", patientId);
+        request.getRequestDispatcher("patientResult.jsp").forward(request, response);
+    }
+}
+</code>
+  </pre>
+</section>
+
+
+<section>
+  <h3>Cliente HAPI-FHIR</h3>
+  <p>Una guía para interactuar con recursos FHIR mediante métodos genéricos y gestionar transacciones con HAPI-FHIR.</p>
+</section>
+
+<section>
+  <h3>Configuración del Cliente</h3>
+  <p>Cómo configurar un cliente genérico con HAPI-FHIR:</p>
+  <pre><code class="java">
+// Importar las clases necesarias
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+
+// Crear un contexto FHIR para la versión R4
+FhirContext ctx = FhirContext.forR4();
+
+// Crear un cliente genérico apuntando al servidor FHIR
+IGenericClient client = ctx.newRestfulGenericClient("http://servidor-fhir.com");
+  </code></pre>
+</section>
+
+<section>
+  <h3>Método: Crear Recursos</h3>
+  <p>Este método genérico crea cualquier recurso FHIR en el servidor.</p>
+  <pre><code class="java">
+import org.hl7.fhir.r4.model.Resource;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+
+// Método genérico para crear un recurso
+public MethodOutcome createResource(Resource resource) {
+    MethodOutcome outcome = client.create()
+                                  .resource(resource)
+                                  .execute();
+    return outcome;
+}
+  </code></pre>
+  <p><a href="https://hapifhir.io/hapi-fhir/docs/client/examples.html#creating-resources" target="_blank">Documentación oficial</a></p>
+</section>
+
+<section>
+  <h3>Método: Leer Recursos</h3>
+  <p>Permite leer recursos desde el servidor FHIR utilizando su tipo e ID.</p>
+  <pre><code class="java">
+import org.hl7.fhir.r4.model.Resource;
+
+// Método genérico para leer un recurso por su ID
+public <T extends Resource> T readResource(Class<T> resourceType, String id) {
+    T resource = client.read()
+                       .resource(resourceType)
+                       .withId(id)
+                       .execute();
+    return resource;
+}
+  </code></pre>
+  <p><a href="https://hapifhir.io/hapi-fhir/docs/client/examples.html#reading-resources" target="_blank">Documentación oficial</a></p>
+</section>
+
+<section>
+  <h3>Método: Actualizar Recursos</h3>
+  <p>Actualiza un recurso existente en el servidor FHIR.</p>
+  <pre><code class="java">
+import ca.uhn.fhir.rest.api.MethodOutcome;
+
+// Método genérico para actualizar un recurso
+public MethodOutcome updateResource(Resource resource) {
+    MethodOutcome outcome = client.update()
+                                  .resource(resource)
+                                  .execute();
+    return outcome;
+}
+  </code></pre>
+  <p><a href="https://hapifhir.io/hapi-fhir/docs/client/examples.html#updating-resources" target="_blank">Documentación oficial</a></p>
+</section>
+
+<section>
+  <h3>Método: Eliminar Recursos</h3>
+  <p>Elimina un recurso del servidor FHIR por su tipo e ID.</p>
+  <pre><code class="java">
+// Método genérico para eliminar un recurso por su ID
+public void deleteResource(Class<? extends Resource> resourceType, String id) {
+    client.delete()
+          .resourceById(resourceType.getSimpleName(), id)
+          .execute();
+}
+  </code></pre>
+  <p><a href="https://hapifhir.io/hapi-fhir/docs/client/examples.html#deleting-resources" target="_blank">Documentación oficial</a></p>
+</section>
+
+<section>
+  <h3>Gestión de Transacciones</h3>
+  <p>Permite agrupar múltiples operaciones en un <code>Bundle</code> y ejecutarlas como una única transacción.</p>
+  <pre><code class="java">
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.Bundle.HTTPVerb;
+
+// Crear un Bundle de tipo transacción
+Bundle transactionBundle = new Bundle();
+transactionBundle.setType(BundleType.TRANSACTION);
+
+// Crear un recurso Paciente
+Patient patient = new Patient();
+patient.addName().setFamily("Doe").addGiven("John");
+patient.setGender(Enumerations.AdministrativeGender.MALE);
+
+// Añadir la operación de creación al Bundle
+transactionBundle.addEntry()
+                 .setResource(patient)
+                 .getRequest()
+                 .setMethod(HTTPVerb.POST)
+                 .setUrl("Patient");
+
+// Enviar el Bundle al servidor
+Bundle response = client.transaction()
+                        .withBundle(transactionBundle)
+                        .execute();
+  </code></pre>
+  <p><a href="https://hapifhir.io/hapi-fhir/docs/model/bundle_builder.html" target="_blank">Documentación oficial</a></p>
+</section>
+
+<section>
+  <h3>Ventajas del Enfoque</h3>
+  <ul>
+    <li>Flexibilidad: Trabaja con cualquier tipo de recurso FHIR.</li>
+    <li>Optimización: Reduce las interacciones mediante transacciones.</li>
+    <li>Consistencia: Garantiza la atomicidad con transacciones completas.</li>
+  </ul>
+</section>
+
+
+
+
+        <section>
+          <h2>Cliente HAPI-FHIR</h2>
+          <p>Autenticación</p>
+        </section>
+        <section>
+          <h2>Cliente HAPI-FHIR</h2>
+          <p>Recursos personalizados (plantillas)</p>
+        </section>
+
+      <section>
+          <h3>Cliente JS</h3>
+          <small>
+          <p>Hacer un cliente web usando javascript es súmamente sencillo.</p>
+  <p>En el fichero <a href="./resources/client-web-js.html" target="_blank">./resources/client-web-js.html</a> encontrarás el código de un cliente sencillito que crea y envía recursos paciente a un servidor fhir definido en la configuración.</p>
+          </small>
+        </section>
+        <section>
+          <h3>Cliente JS</h3>
+             <iframe 
+        src="./resources/client-web-js.html" 
+        width="50%" 
+        height="600px"
+        style="border: none;">
+    </iframe>
+        </section>
+     <section>
+          <h3>Cliente JS</h3>
+          <small>
+<table>
+						<thead>
+							<tr>
+								<th>Ventajas++</th>
+								<th>Inconvenientes--</th>
+							</tr>
+						</thead>
+						<tbody>
+
+							<tr>
+								<td>Gracias a los objetyos JS es fácil de construir</td>
+								<td>Los objetos JS no vienen definidos con el estándar FHIR (aunque ya empiezan a haber librerías)</td>
+							</tr>
+							<tr>
+								<td>Fácil de incrustar y/o trasladar a otras aplicaciones</td>
+								<td>Toda la gestión de errores se tiene que realizar a mano</td>
+              <tr>
+								<td>Hay múltiples tecnologías que nos dan posibilidades</td>
+								<td>Es una solución sólo Frontend</td>
+							</tr>
+							<tr>
+								<td>Muy rápido de desarrollar y poco boilerplate</td>
+								<td>Si se usa algún Framework como Angular, Vue, Lit, etc., y se quiere desplegar en un Tomcat, implica 2 entornos de desarrollo a integrar, usar CORS y es un poco complejo.</td>
+							</tr>
+							
+						</tbody>
+					</table>
+          </small>
+
+        </section>
+  
+  </section>
+
+ 
+
+     <!-- Añade tantas secciones como necesites -->
+      <section data-background="./assets/imgs/familyguy.webp">
+      </section>
+    <section>
+         <section>
+          <h2>Extras</h2>
+          <p></p>
+        </section>
+
+<section>
+  <h3>Bibliografía y Recursos</h3>
+  <small>
+  <ul>
+  <li><a href="https://hl7.org/FHIR/" target="_blank">Especificación de FHIR</a></li>
+  <li><a href="file:///C:/Users/notaz/Downloads/20240320%20-%20FHIR%20Intro%20for%20HL7%20Australia.pdf" target="_blank">Intro a FHIR</a>.</li>
+  <li><a href="https://www.youtube.com/watch?v=HdPyV6ggGA4&list=PLUr-PTsPYKV4SHhszovqJ3v4hEhRezqzo&index=1" target="_blank">Videotutoriales varios (Inglés)</a>.</li>
+  <li><a href="https://devdays.com/wp-content/uploads/2021/12/DD21US_20210608_Sloan_Holiday_Lessons_learned_with_Fhir_Paging_and_with_Plain_ServerFa_ade_Fhir_Servers_and_Load_Balanced_Systems_.pdf" target="_blank">Balanceo y paginación en FHIR</a>.</li>
+  <li><a href="https://hapifhir.io/hapi-fhir/docs/" target="_blank">Documentación oficial de HAPI-FHIR</a>.</li>
+  <li><a href="file:///C:/Users/notaz/Downloads/23JayathissaandHewapathranapp.225-241-1.pdf" target="_blank">Experiencia levantando un servidor HAPI FHIR</a>.</li>
+  </ul>
+  </small>
+</section>
+
+
+  <section>
+  <h3>Notas de los ejemplos de Java</h3>
+  <small>
+  <p>Como compilar y ejecutar los ejemplos java en la consola (para novatillos), así no hay que abrir ni eclipse.</p>
+  </small>
+<pre><code class="bash">
+cd /raiz/del/proyecto
+javac -cp "./libs/*" -d bin src/FhirPatientClient.java
+java -cp "./libs/*;bin" FhirPatientClient
+</code></pre>
+  
+</section>       
+  <section>
+  <h3>Integrar HAPI con un servidor de terminología externo</h3>
+  <p>Ahora, edita el archivo "index.html" recién creado añadiendo el siguiente código HTML:</p>
+</section>       
+  <section>
+  <h3>Integrar FHIR usando HAPI y Camel</h3>
+  <p>Ahora, edita el archivo "index.html" recién creado añadiendo el siguiente código HTML:</p>
+</section>       
+
+
+  <section>
+  <h3>Integrar FHIR con Apache Workflow</h3>
+  <p>Ahora, edita el archivo "index.html" recién creado añadiendo el siguiente código HTML:</p>
+</section>       
+
+  <section>
+  <h3>Integrar FHIR con NodeRed</h3>
+  <p>Ahora, edita el archivo "index.html" recién creado añadiendo el siguiente código HTML:</p>
+</section>       
+
+  <section>
+  <h3>Integrar FHIR con N8N</h3>
+  <p>Ahora, edita el archivo "index.html" recién creado añadiendo el siguiente código HTML:</p>
+</section>       
+      </section>
+
+
+
+     <section data-background="./assets/imgs/fine.webp">
+        <h2></h2>
+      </section>
+ 
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+		<script src="reveal/dist/reveal.js"></script>
+		<script src="reveal/plugin/notes/notes.js"></script>
+		<script src="reveal/plugin/markdown/markdown.js"></script>
+		<script src="reveal/plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
